@@ -4,8 +4,8 @@ import time
 import ntptime
 import utime
 import os
-import MCP9808 # this needs to be a file saved on esp32s3
-import umail   # this needs to be a file saved on esp32s3
+import MCP9808 # this needs to be a file saved on esp32c3
+import umail   # this needs to be a file saved on esp32c3
 import uasyncio as asyncio
 
 def file_exists(filename):
