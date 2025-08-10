@@ -5,3 +5,5 @@ This is a re-write of my other project which uses esp32s3 and dual threads (one 
 Two include files are needed (MCP9808.py and umail.py) which can be downloaded from my [previous esp32s3 repo](https://github.com/charkster/esp32s3_mcp9808_temp_csv_email_and_webpage).
 
 I plan to do a code clean-up to improve readability (and reduce length of the script).
+
+I have been wanting to use asyncio in a project for a while... it is very cool. 
