@@ -144,7 +144,7 @@ async def main():
 
     print('Initialize Sensor...')
     FILE_NAME     = 'temp_data.csv'
-    meas_interval = 5 # meas_interval is in minutes
+    meas_interval = 30 # meas_interval is in minutes
     fahrenheit    = True
     i2c = machine.I2C(sda=machine.Pin(6), scl=machine.Pin(7), freq=400000) # esp32c3 xiao
     tsensor = MCP9808.MCP9808(i2c_instance=i2c, i2c_dev_addr=0x18, fahrenheit=fahrenheit)
@@ -163,16 +163,16 @@ async def main():
     asyncio.create_task(asyncio.start_server(serve_client, "0.0.0.0", 80))
     
     print('Start Temp Meas Loop...')
+    t = time.localtime()
+    curr_min = t[3]*60+t[4]
+    missed_meas = curr_min//meas_interval + 1
+    curr_sec = t[5]
+    await asyncio.sleep(60 - curr_sec) # align with minute boundary
+    wait_min = meas_interval - (curr_min % meas_interval) - 1
+    await asyncio.sleep(60*wait_min) # align with expected interval boundary
+    total_meas = (60 * 24)//meas_interval
+    remaining_meas = total_meas - missed_meas
     while True:
-        t = time.localtime()
-        curr_min = t[3]*60+t[4]
-        missed_meas = curr_min//meas_interval + 1
-        curr_sec = t[5]
-        await asyncio.sleep(60 - curr_sec) # align with minute boundary
-        wait_min = meas_interval - (curr_min % meas_interval) - 1
-        await asyncio.sleep(60*wait_min) # align with expected interval boundary
-        total_meas = (60 * 24)//meas_interval
-        remaining_meas = total_meas - missed_meas
         for n in range(0,remaining_meas): # this loop is for the first day
             try:
                 temp = tsensor.get_temp()
@@ -204,6 +204,7 @@ async def main():
         curr_sec = t[5]
         await asyncio.sleep(60 - curr_sec) # align with minute boundary
         await asyncio.sleep( ((60*24) - curr_min - 1)*60 ) # align to midnight
+        remaining_meas = total_meas
         
 try:
     asyncio.run(main())
