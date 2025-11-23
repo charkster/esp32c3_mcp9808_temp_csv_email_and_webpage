@@ -209,4 +209,5 @@ async def main():
 try:
     asyncio.run(main())
 finally:
-    asyncio.new_event_loop()
+#    asyncio.new_event_loop()
+    machine.reset()
