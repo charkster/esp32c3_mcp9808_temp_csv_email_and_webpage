@@ -205,7 +205,8 @@ async def main():
         await asyncio.sleep(60 - curr_sec) # align with minute boundary
         await asyncio.sleep( ((60*24) - curr_min - 1)*60 ) # align to midnight
         remaining_meas = total_meas
-        
+
+time.sleep(3) # delay to allow Thonny to connect
 try:
     asyncio.run(main())
 finally:
