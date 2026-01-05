@@ -118,12 +118,17 @@ async def serve_client(reader, writer):
                 writer.write("Content-Type: application/octet-stream\r\n")
                 writer.write("Content-Disposition: attachment; filename={}\r\n".format(FILE_NAME))
                 writer.write("\r\n")
-                writer.write(file.read())  # Send the file content
+                while True:
+                    data = file.read(1024) # send data in 1k chunks
+                    if data:
+                        writer.write(data)
+                    else:
+                        break
         except OSError:
             try:
                 writer.write("HTTP/1.1 404 Not Found\r\n\r\nFile not found.")
             except:
-                pass
+                machine.reset()
     else:
         try:
             writer.write("HTTP/1.1 200 OK\r\n")
@@ -132,7 +137,7 @@ async def serve_client(reader, writer):
             writer.write("<p><a href='/download'>" + FILE_NAME + "</a></p>")
             writer.write("</body></html>")
         except OSError:
-            pass
+            machine.reset()
 
     await writer.drain()
     await writer.wait_closed()
