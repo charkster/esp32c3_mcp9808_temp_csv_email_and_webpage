@@ -54,7 +54,12 @@ def sendEmail(CSV_FILE):
     content = ''
     try:
         with open(CSV_FILE, 'r') as infile:
-            content = infile.read()
+            while True:
+                content = infile.read(1024)
+                if content:
+                    smtp.write(content)
+                else:
+                    break
     except OSError:
         pass
     smtp.write(content)
