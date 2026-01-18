@@ -127,6 +127,7 @@ async def serve_client(reader, writer):
                     data = file.read(1024) # send data in 1k chunks
                     if data:
                         writer.write(data)
+                        await writer.drain()
                     else:
                         break
         except OSError:
